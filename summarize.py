@@ -1,45 +1,4 @@
-# to run:
-# python3 summarize.py
-
-########
-# readme
-########
-
-# Summarize an AWS S3 access log file
-#
-# Documentation of log format:
-# https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html
-#
-# Sample log:
-# 79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be DOC-EXAMPLE-BUCKET1 [06/Feb/2019:00:00:38 +0000] 192.0.2.3 79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be 3E57427F3EXAMPLE REST.GET.VERSIONING - "GET /DOC-EXAMPLE-BUCKET1?versioning HTTP/1.1" 200 - 113 - 7 - "-" "S3Console/0.4" - s9lzHYrFp76ZVxRcpX9+5cjAnEH2ROuNkd2BHfIa6UkFVdtjf5mKR3/eTPFvsiP/XV/VLi31234= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader DOC-EXAMPLE-BUCKET1.s3.us-west-1.amazonaws.com TLSV1.2 arn:aws:s3:us-west-1:123456789012:accesspoint/example-AP Yes
-#
-# Fields in each log:
-# 0 bucket owner id
-# 1 bucket name
-# 2 timestamp
-# 3 IP address
-# 4 requester id
-# 5 request id
-# 6 operation
-# 7 s3 object key
-# 8 request uri
-# 9 http status
-# 10 error code
-# 11 bytes sent
-# 12 object sizee
-# 13 total time
-# 14 turn around time
-# 15 referer
-# 16 user agent
-# 17 version id
-# 18 host id
-# 19 signature version
-# 20 cipher
-# 21 auth type
-# 22 host header
-# 23 tls version
-# 24 access point arrn
-# 25 acl required
+#!/usr/bin/env python
 
 #########
 # imports
@@ -63,12 +22,12 @@ def clean_log(line):
   ''' clean up log '''
   # replace brackets with quotes
   new_line = line.replace('[', '"', 1).replace(']', '"', 1)
-  # cut out arn prefix in requester id field
+  # if requester is an AWS IAM user, the requester id will contain a long arn prefix, cut it out.
   new_line = re.sub(r"arn:aws:iam::\d+:user/", "", new_line)
   return new_line
 
 def construct_table_data_rows(summary, sorted_days, delimiter):
-  ''' construct data rrows of the summary table '''
+  ''' construct data rows of the summary table '''
   # example:
   # foo    bar    ... 10   5    0    ...
   # oof    rab    ... 3    2    1    ...
@@ -97,10 +56,11 @@ def increment_dict_sub_key_count(dict1, key, sub_key):
   dict1[key] = dict1.get(key, { sub_key: 0 })
   dict1[key][sub_key] = dict1[key].get(sub_key, 0) + 1
 
-def skip_log(fields, aws_accounts_whose_keys_in_circleci):
+def skip_log(fields, requesters_to_skip):
   ''' decides whether a log should be skipped '''
-  # skip if requester's AWS key is not stored in CircleCI
-  return not any(element.lower() in fields[4].lower() for element in aws_accounts_whose_keys_in_circleci)
+  # skip if requester id matches any listed in requesters_to_skip
+  # helpful if you are analyzing for security breach and want to ignore logs related to known good requesters
+  return not any(element.lower() in fields[4].lower() for element in requesters_to_skip)
 
 ###########
 # main code
@@ -110,7 +70,7 @@ def main():
   parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
   parser.add_argument("logfile", help=
     '''
-    path to the S3 log file, example: /tmp/logfile
+    path to the S3 log file, example: /tmp/logs.txt
     ''')
   parser.add_argument("field_numbers", help=
     '''
@@ -152,22 +112,7 @@ def main():
   # delimiter when concatenating field values, be sure the string never happens in the logs themselves
   DELIMIT = '###'
 
-  # AWS user names whose AWS keys are stored in CircleCI
-  aws_accounts_whose_keys_in_circleci = [
-    'artsy-echo',
-    'artsy-static-sites',
-    'artsy-webfonts',
-    'brian',
-    'causality',
-    'circleci',
-    'eigen-circleci',
-    'Mobile-Second-Curtain',
-    'motion',
-    'palette-docs-uploader',
-    'spectroscopy',
-    'travis',
-    'watt'
-  ]
+  requesters_to_skip = []
 
   # parse file, construct summary
   with open(LOGFILE, 'r') as reader:
@@ -178,7 +123,7 @@ def main():
       csv_reader = csv.reader([clean_log(log)], delimiter=' ')
       # parse interested fields
       for fields in csv_reader:
-        if skip_log(fields, aws_accounts_whose_keys_in_circleci):
+        if skip_log(fields, requesters_to_skip):
           skip = True
           continue
         # track unique days seen
@@ -197,6 +142,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-# todo:
-# - convert to use panda/pivo-table

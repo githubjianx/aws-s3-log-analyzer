@@ -43,7 +43,3 @@ def test_skip_log():
   assert skip_log(fields, accounts) == False
   fields = 'abc 123 def 456 ecila ghi 789'
   assert skip_log(fields, accounts) == True
-
-# todo:
-# - convert to use pytest-describe
-# - find a way to treat long lines
