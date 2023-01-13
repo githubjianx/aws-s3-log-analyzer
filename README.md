@@ -1,4 +1,4 @@
-# aws_s3_log_analyzer
+# aws-s3-log-analyzer
 
 A little script to help summarize [AWS S3 logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html).
 
