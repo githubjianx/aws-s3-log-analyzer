@@ -38,8 +38,10 @@ def test_increment_dict_sub_key_count_empty_dict():
   assert dict1 == { 'foo': { '123': 1 }, 'bar': { '123': 1 } }
 
 def test_skip_log():
-  fields = ['abc', '123', 'def', '456', 'alice', 'ghi', '789']
   accounts = ['alice', 'bob']
+  fields = ['abc', '123', 'def', '456', 'alice', 'ghi', '789']
   assert skip_log(fields, accounts) == False
   fields = 'abc 123 def 456 ecila ghi 789'
   assert skip_log(fields, accounts) == True
+  accounts = []
+  assert skip_log(fields, accounts) == False

@@ -56,11 +56,13 @@ def increment_dict_sub_key_count(dict1, key, sub_key):
   dict1[key] = dict1.get(key, { sub_key: 0 })
   dict1[key][sub_key] = dict1[key].get(sub_key, 0) + 1
 
-def skip_log(fields, requesters_to_skip):
+def skip_log(fields, requesters_to_include):
   ''' decides whether a log should be skipped '''
-  # skip if requester id matches any listed in requesters_to_skip
-  # helpful if you are analyzing for security breach and want to ignore logs related to known good requesters
-  return not any(element.lower() in fields[4].lower() for element in requesters_to_skip)
+  # skip if requester id does not match any listed in requesters_to_include
+  # helpful if you are analyzing for security breach and want to focus on known suspicious requesters
+  # if requesters_to_include is empty, do not skip requester
+  skip = (len(requesters_to_include) > 0 ) and not any(element.lower() in fields[4].lower() for element in requesters_to_include)
+  return skip
 
 ###########
 # main code
@@ -112,7 +114,7 @@ def main():
   # delimiter when concatenating field values, be sure the string never happens in the logs themselves
   DELIMIT = '###'
 
-  requesters_to_skip = []
+  requesters_to_include = []
 
   # parse file, construct summary
   with open(LOGFILE, 'r') as reader:
@@ -123,7 +125,7 @@ def main():
       csv_reader = csv.reader([clean_log(log)], delimiter=' ')
       # parse interested fields
       for fields in csv_reader:
-        if skip_log(fields, requesters_to_skip):
+        if skip_log(fields, requesters_to_include):
           skip = True
           continue
         # track unique days seen
