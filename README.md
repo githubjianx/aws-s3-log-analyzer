@@ -65,7 +65,7 @@ field-num field-meaning
 21 auth type
 22 host header
 23 tls version
-24 access point arrn
+24 access point arn
 25 acl required
 ```
 
