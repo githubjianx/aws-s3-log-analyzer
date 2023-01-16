@@ -43,8 +43,9 @@ pytest
 
 # Future Improvements
 
-- Can work with multiple log files stored under a directory
-- Use Pandas to parse timestamp field as a datetime object
 - Pull log files from AWS by date range
+- Find a library that returns content of a file as well as of all files under a directory
+- When there are a lot of log files (e.g. 40k), reading the logs takes a long time, see if there's faster way to read
+- Use Pandas to parse timestamp field as a datetime object
 - Convert tests to use pytest-describe
 - Find a way to manage long lines (mostly string literals) in tests

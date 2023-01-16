@@ -19,8 +19,12 @@ def main():
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
   )
   parser.add_argument(
-    'logfile',
-    help='path to the S3 log file, example: ./sample_logs.txt'
+    'logpath',
+    help='''
+    path to S3 logs, can be a file, example: ./sample_logs.txt,
+    or a directory, example: ./sample_logs,
+    in the case of a directory, all files in it will be read recursively.
+    '''
   )
   parser.add_argument(
     'fields',
@@ -32,17 +36,17 @@ def main():
   parser.add_argument('--excel-out-file', default='./summary.xlsx', help='excel output file path')
   args = parser.parse_args()
 
-  LOGFILE = args.logfile
+  LOGPATH = args.logpath
   fields = args.fields.split(',')
   excel_out = args.excel_out
   excel_out_file = args.excel_out_file
 
-  # use dataframe to construct list of s3 log field names
+  # use dataframe to construct list of log field names
   df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
   columns = df[1].tolist()
 
   # create dataframe from logs csv data
-  csv_rows = s3_logs_to_csv_rows(LOGFILE)
+  csv_rows = s3_logs_to_csv_rows(LOGPATH)
   df = pd.DataFrame.from_records(csv_rows, columns=columns)
 
   # create a day column using the day part of timestamp column
