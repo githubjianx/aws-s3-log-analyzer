@@ -30,9 +30,12 @@ def main():
   LOGFILE = args.logfile
   fields = args.fields.split(',')
 
-  # initialize data frame
+  # use dataframe to construct list of s3 log field names
+  df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
+  columns = df[1].tolist()
+
+  # create dataframe from logs csv data
   csv_rows = s3_logs_to_csv_rows(LOGFILE)
-  columns = ['bucket-owner-id', 'bucket-name', 'timestamp', 'ip-address', 'requester-id', 'request-id', 'operation', 's3-object-key', 'request-uri', 'http-status', 'error-code', 'bytes-sent', 'object-size', 'total-time', 'turn-around-time', 'referer', 'user-agent', 'version-id', 'host-id', 'signature-version', 'cipher', 'auth-type', 'host-header', 'tls-version', 'access-point-arn', 'acl-required']
   df = pd.DataFrame.from_records(csv_rows, columns=columns)
 
   # create a day column using the day part of timestamp column
@@ -47,7 +50,13 @@ def main():
     aggfunc=len,
     fill_value=0,
   )
-  print(pivot)
+
+  with pd.option_context(
+    'display.max_rows', None,
+    'display.width', None,
+    'display.max_columns', None,
+    ):
+    print(pivot)
 
 if __name__ == '__main__':
   main()
