@@ -10,7 +10,7 @@
 9 http-status
 10 error-code
 11 bytes-sent
-12 object-sizee
+12 object-size
 13 total-time
 14 turn-around-time
 15 referer

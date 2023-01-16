@@ -32,13 +32,18 @@ def main():
 
   # initialize data frame
   csv_rows = s3_logs_to_csv_rows(LOGFILE)
-  columns = ['bucket-owner-id', 'bucket-name', 'timestamp', 'ip-address', 'requester-id', 'request-id', 'operation', 's3-object-key', 'request-uri', 'http-status', 'error-code', 'bytes-sent', 'object-sizee', 'total-time', 'turn-around-time', 'referer', 'user-agent', 'version-id', 'host-id', 'signature-version', 'cipher', 'auth-type', 'host-header', 'tls-version', 'access-point-arn', 'acl-required']
+  columns = ['bucket-owner-id', 'bucket-name', 'timestamp', 'ip-address', 'requester-id', 'request-id', 'operation', 's3-object-key', 'request-uri', 'http-status', 'error-code', 'bytes-sent', 'object-size', 'total-time', 'turn-around-time', 'referer', 'user-agent', 'version-id', 'host-id', 'signature-version', 'cipher', 'auth-type', 'host-header', 'tls-version', 'access-point-arn', 'acl-required']
   df = pd.DataFrame.from_records(csv_rows, columns=columns)
 
-  pivot = df.pivot_table(
+  # create a day column using the day part of timestamp column
+  df['day'] = df['timestamp'].str.split(':').str.get(0)
+
+  # cut out day column and those specified by fields arg
+  df2 = df[fields + ['day']]
+
+  pivot = df2.pivot_table(
     index=fields,
-    columns='timestamp',
-    values='bytes-sent',
+    columns='day',
     aggfunc=len,
     fill_value=0,
   )

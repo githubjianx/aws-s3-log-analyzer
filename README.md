@@ -45,5 +45,7 @@ pytest
 
 - Print all rows in pivot table output, and print full value of each cell
 - `summarize.py` read S3 log field names from `s3_log_field_list.txt`
+- Can work with multiple log files stored under a directory
+- Pull log files from AWS by date range
 - Convert tests to use pytest-describe
 - Find a way to manage long lines (mostly string literals) in tests

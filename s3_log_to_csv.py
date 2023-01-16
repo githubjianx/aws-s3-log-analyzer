@@ -21,10 +21,6 @@ def s3_logs_to_csv_rows(logfile):
       csv_reader = csv.reader([cleaned_log], delimiter=' ')
       # row is a list of fields in the log line
       for row in csv_reader:
-        # keep only the day in timestamp
-        day = row[2].split(':')[0]
-        row[2] = day
-
         rows += [row]
       log = reader.readline()
   return rows
