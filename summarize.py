@@ -5,6 +5,7 @@
 #########
 
 import argparse
+import openpyxl
 import pandas as pd
 
 from s3_log_to_csv import s3_logs_to_csv_rows
@@ -14,21 +15,27 @@ from s3_log_to_csv import s3_logs_to_csv_rows
 ###########
 
 def main():
-  parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-  parser.add_argument("logfile", help=
-    '''
-    path to the S3 log file, example: ./sample_logs.txt
-    ''')
-  parser.add_argument("fields", help=
-    '''
-    comma delimited list of fields in each S3 log to summarize
-    for example, specify: requester-id,s3-object-key
-    to summarize those fields
-    ''')
+  parser = argparse.ArgumentParser(
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+  )
+  parser.add_argument(
+    'logfile',
+    help='path to the S3 log file, example: ./sample_logs.txt'
+  )
+  parser.add_argument(
+    'fields',
+    help='''
+    list of fields in each S3 log to summarize, separated by comma,
+    example: requester-id,s3-object-key'''
+  )
+  parser.add_argument('--excel-out', action='store_true', help='write summary to excel file')
+  parser.add_argument('--excel-out-file', default='./summary.xlsx', help='excel output file path')
   args = parser.parse_args()
 
   LOGFILE = args.logfile
   fields = args.fields.split(',')
+  excel_out = args.excel_out
+  excel_out_file = args.excel_out_file
 
   # use dataframe to construct list of s3 log field names
   df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
@@ -57,6 +64,8 @@ def main():
     'display.max_columns', None,
     ):
     print(pivot)
+
+  excel_out and pivot.to_excel(excel_out_file)
 
 if __name__ == '__main__':
   main()
