@@ -11,10 +11,26 @@ import pandas as pd
 from s3_log_to_csv import s3_logs_to_csv_rows
 
 ###########
-# main code
+# functions 
 ###########
 
-def main():
+def create_data_frame(logpath, fields):
+  ''' create a data frame holding the logs '''
+  # get a list of log field names, using a dataframe
+  df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
+  columns = df[1].tolist()
+
+  # create a logs dataframe
+  csv_rows = s3_logs_to_csv_rows(logpath)
+  df = pd.DataFrame.from_records(csv_rows, columns=columns)
+
+  # add a column holding the day part of timestamp column
+  df['day'] = df['timestamp'].str.split(':').str.get(0)
+
+  # new dataframe with just the day column and the fields' columns
+  return df[fields + ['day']]
+
+def parse_args():
   parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
   )
@@ -34,28 +50,23 @@ def main():
   )
   parser.add_argument('--excel-out', action='store_true', help='write summary to excel file')
   parser.add_argument('--excel-out-file', default='./summary.xlsx', help='excel output file path')
-  args = parser.parse_args()
+  return parser.parse_args()
 
-  LOGPATH = args.logpath
-  fields = args.fields.split(',')
-  excel_out = args.excel_out
-  excel_out_file = args.excel_out_file
+###########
+# main code
+###########
 
-  # use dataframe to construct list of log field names
-  df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
-  columns = df[1].tolist()
+def main():
+  args = parse_args()
+  logpath, fields, excel_out, excel_out_file = (
+    args.logpath, args.fields.split(','), args.excel_out, args.excel_out_file
+  )
 
-  # create dataframe from logs csv data
-  csv_rows = s3_logs_to_csv_rows(LOGPATH)
-  df = pd.DataFrame.from_records(csv_rows, columns=columns)
+  df = create_data_frame(logpath, fields)
 
-  # create a day column using the day part of timestamp column
-  df['day'] = df['timestamp'].str.split(':').str.get(0)
+  # create and print summary
 
-  # cut out day column and those specified by fields arg
-  df2 = df[fields + ['day']]
-
-  pivot = df2.pivot_table(
+  pivot = df.pivot_table(
     index=fields,
     columns='day',
     aggfunc=len,
