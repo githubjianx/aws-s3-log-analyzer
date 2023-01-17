@@ -50,8 +50,7 @@ def s3_logs_to_csv_rows(logpath):
 
 def main():
   args = parse_args()
-  logpath = args.logpath
-  outfile = args.outfile
+  logpath, outfile = args.logpath, args.outfile
 
   csv_rows = s3_logs_to_csv_rows(logpath)
   with open(outfile, 'w', newline='') as outfile:
