@@ -1,9 +1,9 @@
-from s3_log_to_csv import *
+from aws_s3_log_analyzer.logs import s3_logs_to_csv_rows
 
 def test_s3_logs_to_csv_rows():
   ''' test rows returned by s3_logs_to_csv_rows match sample_logs.txt.csv '''
-  logfile = './sample_logs.txt'
-  logfile_csv = './sample_logs.txt.csv'
+  logfile = './data/sample_logs.txt'
+  logfile_csv = './data/sample_logs.txt.csv'
 
   rows = s3_logs_to_csv_rows(logfile)
 

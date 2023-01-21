@@ -1,34 +1,10 @@
 #!/usr/bin/env python
 
-#########
-# imports
-#########
-
 import argparse
 import openpyxl
 import pandas as pd
 
-from s3_log_to_csv import s3_logs_to_csv_rows
-
-###########
-# functions 
-###########
-
-def create_data_frame(logpath, fields):
-  ''' create a data frame holding the logs '''
-  # get a list of log field names, using a dataframe
-  df = pd.read_csv('s3_log_field_list.txt', sep=' ', header=None)
-  columns = df[1].tolist()
-
-  # create a logs dataframe
-  csv_rows = s3_logs_to_csv_rows(logpath)
-  df = pd.DataFrame.from_records(csv_rows, columns=columns)
-
-  # add a column holding the day part of timestamp column
-  df['day'] = df['timestamp'].str.split(':').str.get(0)
-
-  # new dataframe with just the day column and the fields' columns
-  return df[fields + ['day']]
+from aws_s3_log_analyzer.logs import create_data_frame
 
 def parse_args():
   parser = argparse.ArgumentParser(
@@ -56,31 +32,27 @@ def parse_args():
 # main code
 ###########
 
-def main():
-  args = parse_args()
-  logpath, fields, excel_out, excel_out_file = (
-    args.logpath, args.fields.split(','), args.excel_out, args.excel_out_file
-  )
+args = parse_args()
+logpath, fields, excel_out, excel_out_file = (
+  args.logpath, args.fields.split(','), args.excel_out, args.excel_out_file
+)
 
-  df = create_data_frame(logpath, fields)
+df = create_data_frame(logpath, fields)
 
-  # create and print summary
+# create and print summary
 
-  pivot = df.pivot_table(
-    index=fields,
-    columns='day',
-    aggfunc=len,
-    fill_value=0,
-  )
+pivot = df.pivot_table(
+  index=fields,
+  columns='day',
+  aggfunc=len,
+  fill_value=0,
+)
 
-  with pd.option_context(
-    'display.max_rows', None,
-    'display.width', None,
-    'display.max_columns', None,
-    ):
-    print(pivot)
+with pd.option_context(
+  'display.max_rows', None,
+  'display.width', None,
+  'display.max_columns', None,
+  ):
+  print(pivot)
 
-  excel_out and pivot.to_excel(excel_out_file)
-
-if __name__ == '__main__':
-  main()
+excel_out and pivot.to_excel(excel_out_file)

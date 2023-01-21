@@ -4,10 +4,10 @@ A little command line script to help summarize [AWS S3 logs](https://docs.aws.am
 
 Example usage:
 
-Count unique requester/s3-key (see [field list](./s3_log_field_list.txt)) occurrences by day (on these [sample logs](./sample_logs.txt)):
+Count unique requester/s3-key (see [field list](./data/s3_log_field_list.txt)) occurrences by day (on these [sample logs](./data/sample_logs.txt)):
 
 ```
-$ ./summarize.py sample_logs.txt requester-id,s3-object-key
+$ ./summarize.py ./data/sample_logs.txt requester-id,s3-object-key
 timestamp                   06/Feb/2019  07/Feb/2019
 requester-id s3-object-key
 alice        '/bar.txt'               0            1
