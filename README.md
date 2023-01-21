@@ -1,4 +1,4 @@
-# aws-s3-log-analyzer
+# aws_s3_log_analyzer
 
 A little command line script to help summarize [AWS S3 logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
 
@@ -8,42 +8,41 @@ Count unique requester/s3-key (see [field list](./data/s3_log_field_list.txt)) o
 
 ```
 $ ./summarize.py ./data/sample_logs.txt requester-id,s3-object-key
-timestamp                   06/Feb/2019  07/Feb/2019
-requester-id s3-object-key
+day                         06/Feb/2019  07/Feb/2019
+requester-id s3-object-key                          
 alice        '/bar.txt'               0            1
              '/foo.txt'               3            0
 bob          '/foo.txt'               0            1
 ```
 
-# Requirements
+# requirements
 
 - Python 3.9.10+
 
-# Setup
+# setup
 
 ```
 pip install -r requirements.txt
 ```
 
-# Testing
+# testing
 
 ```
 pytest
 ```
 
-# Run
+# run
 
 ```
 ./summarize.py --help
 ```
 
-# Reference
+# reference
 
 - [Pandas API reference](https://pandas.pydata.org/docs/reference/index.html)
 
-# Future Improvements
+# future improvements
 
-- Pull log files from AWS by date range
-- Use Pandas to parse timestamp field as a datetime object
-- Convert tests to use pytest-describe
-- Find a way to manage long lines (mostly string literals) in tests
+- pull log files from AWS by date range
+- use Pandas to parse timestamp field as a datetime object
+- convert tests to use pytest-describe

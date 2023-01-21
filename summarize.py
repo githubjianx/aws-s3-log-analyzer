@@ -13,7 +13,7 @@ def parse_args():
   parser.add_argument(
     'logpath',
     help='''
-    path to S3 logs, can be a file, example: ./sample_logs.txt,
+    path to S3 logs, can be a file, example: ./data/sample_logs.txt,
     or a directory, example: ./sample_logs,
     in the case of a directory, all files in it will be read recursively.
     '''
@@ -28,9 +28,9 @@ def parse_args():
   parser.add_argument('--excel-out-file', default='./summary.xlsx', help='excel output file path')
   return parser.parse_args()
 
-###########
-# main code
-###########
+######
+# main
+######
 
 args = parse_args()
 logpath, fields, excel_out, excel_out_file = (

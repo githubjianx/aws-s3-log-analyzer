@@ -1,16 +1,8 @@
-#########
-# imports
-#########
-
 import errno
 import glob
 import os
 
 from multiprocessing import Pool
-
-###########
-# functions
-###########
 
 def files(dir1):
   ''' glob all files under dir, recursively '''

@@ -4,7 +4,7 @@ import pandas as pd
 from aws_s3_log_analyzer.files import read_path
 
 def create_data_frame(logpath, fields):
-  ''' create a data frame holding the logs '''
+  ''' create a data frame from log files '''
   # get a list of log field names, using a dataframe
   df = pd.read_csv('./data/s3_log_field_list.txt', sep=' ', header=None)
   columns = df[1].tolist()

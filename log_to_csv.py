@@ -5,10 +5,6 @@ import csv
 
 from aws_s3_log_analyzer.logs import s3_logs_to_csv_rows
 
-###########
-# functions
-###########
-
 def parse_args():
   parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
@@ -28,9 +24,9 @@ def parse_args():
   )
   return parser.parse_args()
 
-###########
-# main code
-###########
+######
+# main
+######
 
 args = parse_args()
 logpath, outfile = args.logpath, args.outfile
