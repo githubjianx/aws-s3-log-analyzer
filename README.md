@@ -47,4 +47,3 @@ ptw
 
 - pull log files from AWS by date range
 - use Pandas to parse timestamp field as a datetime object
-- convert tests to use pytest-describe

@@ -1,4 +1,5 @@
 openpyxl
 pandas
 pytest
+pytest-describe
 pytest-watch
