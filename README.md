@@ -1,6 +1,6 @@
 # aws-s3-log-analyzer
 
-A little command line script to help summarize [AWS S3 logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
+A little command line script to help summarize [AWS S3 access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
 
 Example usage:
 

@@ -22,7 +22,8 @@ def parse_args():
     'fields',
     help='''
     list of fields in each S3 log to summarize, separated by comma,
-    example: requester-id,s3-object-key'''
+    example: requester-id,s3-object-key
+    '''
   )
   parser.add_argument('--excel-out', action='store_true', help='write summary to excel file')
   parser.add_argument('--excel-out-file', default='./summary.xlsx', help='excel output file path')
