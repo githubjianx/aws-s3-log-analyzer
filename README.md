@@ -45,5 +45,4 @@ ptw
 
 # future improvements
 
-- pull log files from AWS by date range
-- use Pandas to parse timestamp field as a datetime object
+- let Pandas parse timestamp string field as a datetime object
