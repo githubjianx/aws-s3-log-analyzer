@@ -2,9 +2,11 @@
 
 import argparse
 
-from aws_s3_log_analyzer.s3 import download
 from datetime import date as ddate, datetime, timedelta
 from pytz import UTC
+
+from aws_s3_log_analyzer.dates import string_to_utc_date
+from aws_s3_log_analyzer.s3 import download
 
 def parse_args():
   parser = argparse.ArgumentParser(
@@ -45,13 +47,6 @@ def parse_args():
   )
   return parser.parse_args()
 
-def string_to_utc_date(date_str):
-  if isinstance(date_str, str):
-    date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
-    return date.replace(tzinfo=UTC)
-  else:
-    return date_str
-
 ######
 # main
 ######
@@ -63,10 +58,8 @@ s3_bucket, start_date, end_date, dest_base_dir  = (
 
 start_date_obj = string_to_utc_date(start_date)
 end_date_obj = string_to_utc_date(end_date)
-
 if start_date_obj > end_date_obj:
-  print('Error: start_date is after end_date')
-  exit()
+  raise ValueError('start_date is after end_date')
 
 dest_dir = dest_base_dir + '/' + s3_bucket
 
