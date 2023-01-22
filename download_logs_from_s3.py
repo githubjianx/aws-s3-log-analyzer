@@ -3,8 +3,7 @@
 import argparse
 
 from aws_s3_log_analyzer.s3 import download
-from datetime import datetime, timedelta
-from datetime import date as ddate
+from datetime import date as ddate, datetime, timedelta
 from pytz import UTC
 
 def parse_args():
