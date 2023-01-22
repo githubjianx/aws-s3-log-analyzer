@@ -1,4 +1,4 @@
-# aws_s3_log_analyzer
+# aws-s3-log-analyzer
 
 A little command line script to help summarize [AWS S3 logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
 
@@ -31,15 +31,17 @@ pip install -r requirements.txt
 pytest
 ```
 
+Or, run [pytest-watch](https://pypi.org/project/pytest-watch/) which runs Pytest whenever a test file is changed:
+
+```
+ptw
+```
+
 # run
 
 ```
 ./summarize.py --help
 ```
-
-# reference
-
-- [Pandas API reference](https://pandas.pydata.org/docs/reference/index.html)
 
 # future improvements
 
