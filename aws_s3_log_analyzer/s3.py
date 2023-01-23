@@ -14,10 +14,10 @@ def download(bucket, start_date, end_date, dest_dir):
   ]
   download_keys(client, bucket, wanted_keys, dest_dir)
 
-def download_keys(client, bucket, keys, base_dir):
+def download_keys(client, bucket, keys, dest_dir):
   ''' download keys from S3 bucket '''
   for k in keys:
-    dest_pathname = os.path.join(base_dir, k)
+    dest_pathname = os.path.join(dest_dir, k)
     dir_path = os.path.dirname(dest_pathname)
     if not os.path.exists(dir_path):
       os.makedirs(dir_path)
