@@ -1,14 +1,30 @@
 import boto3
 import os
 
-# adapted from: https://stackoverflow.com/questions/31918960/boto3-to-download-all-files-from-a-s3-bucket
 def download(bucket, start_date, end_date, dest_dir):
-  ''' copy the content of S3 bucket to local dir '''
-  client = boto3.client('s3')
   keys = []
   keys_last_modified = []
-  wanted_keys = []
-  dirs = []
+  client = boto3.client('s3')
+
+  list_keys(client, bucket, keys, keys_last_modified)
+
+  wanted_keys = [
+    x for idx, x in enumerate(keys)
+    if keys_last_modified[idx] >= start_date and keys_last_modified[idx] <= end_date
+  ]
+  download_keys(client, bucket, wanted_keys, dest_dir)
+
+def download_keys(client, bucket, keys, base_dir):
+  ''' download keys from S3 bucket '''
+  for k in keys:
+    dest_pathname = os.path.join(base_dir, k)
+    dir_path = os.path.dirname(dest_pathname)
+    if not os.path.exists(dir_path):
+      os.makedirs(dir_path)
+    client.download_file(bucket, k, dest_pathname)
+
+def list_keys(client, bucket, keys, keys_last_modified):
+  ''' list all keys in S3 bucket '''
   next_token = ''
   base_kwargs = {
     'Bucket':bucket
@@ -23,25 +39,6 @@ def download(bucket, start_date, end_date, dest_dir):
     if contents != None:
       for i in contents:
         k = i.get('Key')
-        if k[-1] != '/':
-          keys.append(k)
-          keys_last_modified.append(i.get('LastModified'))
-        else:
-          dirs.append(k)
+        keys.append(k)
+        keys_last_modified.append(i.get('LastModified'))
     next_token = results.get('NextContinuationToken')
-
-  wanted_Keys = [
-    x for idx, x in enumerate(keys)
-    if keys_last_modified[idx] >= start_date and keys_last_modified[idx] <= end_date
-  ]
-
-  for d in dirs:
-    dest_pathname = os.path.join(dest_dir, d)
-    if not os.path.exists(os.path.dirname(dest_pathname)):
-      os.makedirs(os.path.dirname(dest_pathname))
-
-  for k in wanted_keys:
-    dest_pathname = os.path.join(dest_dir, k)
-    if not os.path.exists(os.path.dirname(dest_pathname)):
-      os.makedirs(os.path.dirname(dest_pathname))
-    client.download_file(bucket, k, dest_pathname)
