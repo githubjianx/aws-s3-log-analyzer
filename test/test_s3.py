@@ -9,8 +9,6 @@ def describe_download_keys():
 
 def describe_list_keys():
   def gets_keys(expected_keys, expected_keys_last_modified, mock_s3_client):
-    keys = []
-    keys_last_modified = []
-    list_keys(mock_s3_client, None, keys, keys_last_modified)
+    [keys, keys_last_modified] = list_keys(mock_s3_client, None)
     assert keys == expected_keys
     assert keys_last_modified == expected_keys_last_modified

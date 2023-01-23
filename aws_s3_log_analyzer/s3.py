@@ -2,12 +2,8 @@ import boto3
 import os
 
 def download(bucket, start_date, end_date, dest_dir):
-  keys = []
-  keys_last_modified = []
   client = boto3.client('s3')
-
-  list_keys(client, bucket, keys, keys_last_modified)
-
+  [keys, keys_last_modified] = list_keys(client, bucket)
   wanted_keys = [
     x for idx, x in enumerate(keys)
     if keys_last_modified[idx] >= start_date and keys_last_modified[idx] <= end_date
@@ -23,8 +19,10 @@ def download_keys(client, bucket, keys, dest_dir):
       os.makedirs(dir_path)
     client.download_file(bucket, k, dest_pathname)
 
-def list_keys(client, bucket, keys, keys_last_modified):
+def list_keys(client, bucket):
   ''' list all keys in S3 bucket '''
+  keys = []
+  keys_last_modified = []
   next_token = ''
   base_kwargs = {
     'Bucket':bucket
@@ -42,3 +40,5 @@ def list_keys(client, bucket, keys, keys_last_modified):
         keys.append(k)
         keys_last_modified.append(i.get('LastModified'))
     next_token = results.get('NextContinuationToken')
+
+  return [keys, keys_last_modified]
