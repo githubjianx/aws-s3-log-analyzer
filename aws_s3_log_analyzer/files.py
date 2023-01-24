@@ -5,7 +5,7 @@ import os
 from multiprocessing import Pool
 
 def files(dir1):
-  ''' glob all files under dir, recursively '''
+  ''' globs all files in dir, recursively '''
   globstr = dir1 + '/**'
   files = []
   for file1 in glob.glob(globstr, recursive=True):
@@ -14,7 +14,7 @@ def files(dir1):
   return files
 
 def read_files_in_dir(dir1):
-  ''' read all files in a directory, recursively '''
+  ''' reads all files in dir, recursively '''
   lines_of_all_files = []
   with Pool(1) as pool:
     for lines_of_one_file in pool.map(read_path, files(dir1)):
@@ -22,7 +22,7 @@ def read_files_in_dir(dir1):
   return lines_of_all_files
 
 def read_path(path):
-  ''' read path file or if it's a directory, all the files in it '''
+  ''' reads path file or if it's a dir, all files in it '''
   if os.path.isfile(path):
     with open(path, 'r') as reader:
       lines = reader.readlines()
