@@ -3,4 +3,5 @@ openpyxl
 pandas
 pytest
 pytest-describe
+pytest-mock
 pytest-watch
