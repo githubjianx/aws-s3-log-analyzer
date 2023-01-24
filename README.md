@@ -1,6 +1,6 @@
 # aws-s3-log-analyzer
 
-A little command line script to help summarize [AWS S3 logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
+A little command line script to help summarize [AWS S3 access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html) into a table.
 
 Example usage:
 
@@ -45,5 +45,4 @@ ptw
 
 # future improvements
 
-- pull log files from AWS by date range
-- use Pandas to parse timestamp field as a datetime object
+- let Pandas parse timestamp string field as a datetime object
