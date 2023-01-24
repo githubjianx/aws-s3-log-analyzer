@@ -13,44 +13,39 @@ def describe_download_keys():
   pass
 
 def describe_keys_last_modified_in_range():
+  keys = ['foo', 'bar', 'baz']
+  now = datetime.now()
+  start_date = now - timedelta(days = 3)
+  end_date = now - timedelta(days = 1)
   def all_in_range():
-    keys = ['foo', 'bar']
-    now = datetime.now()
     keys_last_modified = [
-      now - timedelta(days = 1),
-      now - timedelta(days = 2)
+      now - timedelta(days = 3),
+      now - timedelta(days = 2),
+      now - timedelta(days = 1)
     ]
-    start_date = now - timedelta(days = 3)
-    end_date = now
     assert keys_last_modified_in_range(
             keys, keys_last_modified, start_date, end_date
            ) == keys
 
   def none_in_range():
-    keys = ['foo', 'bar']
-    now = datetime.now()
     keys_last_modified = [
-      now - timedelta(days = 3),
+      now - timedelta(days = 5),
+      now - timedelta(days = 4),
       now
     ]
-    start_date = now - timedelta(days = 2)
-    end_date = now - timedelta(days = 1)
     assert keys_last_modified_in_range(
             keys, keys_last_modified, start_date, end_date
            ) == []
 
   def some_in_range():
-    keys = ['foo', 'bar']
-    now = datetime.now()
     keys_last_modified = [
-      now - timedelta(hours = 36),
+      now - timedelta(days = 4),
+      now - timedelta(days = 2),
       now
     ]
-    start_date = now - timedelta(days = 2)
-    end_date = now - timedelta(days = 1)
     assert keys_last_modified_in_range(
             keys, keys_last_modified, start_date, end_date
-           ) == ['foo']
+           ) == ['bar']
 
 def describe_list_keys():
   def gets_keys(expected_keys, expected_keys_last_modified, mock_s3_client):
