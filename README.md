@@ -42,7 +42,3 @@ ptw
 ```
 ./summarize.py --help
 ```
-
-# future improvements
-
-- let Pandas parse timestamp string field as a datetime object

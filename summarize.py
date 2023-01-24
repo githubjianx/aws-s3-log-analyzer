@@ -44,7 +44,7 @@ df = create_data_frame(logpath, fields)
 
 pivot = df.pivot_table(
   index=fields,
-  columns='day',
+  columns='yyyy-mm-dd',
   aggfunc=len,
   fill_value=0,
 )

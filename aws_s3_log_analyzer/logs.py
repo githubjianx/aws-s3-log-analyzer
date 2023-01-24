@@ -11,10 +11,12 @@ def create_data_frame(logpath, fields):
   # create a logs dataframe
   csv_rows = s3_logs_to_csv_rows(logpath)
   df = pd.DataFrame.from_records(csv_rows, columns=columns)
-  # add a column holding the day part of timestamp column
-  df['day'] = df['timestamp'].str.split(':').str.get(0)
+  # convert timestamp column to datetime type
+  df['timestamp'] = pd.to_datetime(df['timestamp'], format='%d/%b/%Y:%H:%M:%S +0000')
+  # add a column for the yyyy-mm-dd part of timestamp
+  df['yyyy-mm-dd'] = df['timestamp'].dt.date
   # new dataframe with just the day column and the fields' columns
-  return df[fields + ['day']]
+  return df[fields + ['yyyy-mm-dd']]
 
 def s3_logs_to_csv_rows(logpath):
   ''' converts s3 logs to csv format '''
