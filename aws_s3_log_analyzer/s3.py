@@ -5,7 +5,9 @@ def download(bucket, start_date, end_date, dest_dir):
   ''' downloads to dest dir those s3 bucket keys last modified in date range '''
   client = boto3.client('s3')
   [keys, keys_last_modified] = list_keys(client, bucket)
-  wanted_keys = keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date)
+  wanted_keys = keys_last_modified_in_range(
+                  keys, keys_last_modified, start_date, end_date
+                )
   download_keys(client, bucket, wanted_keys, dest_dir)
 
 def download_keys(client, bucket, keys, dest_dir):
@@ -24,7 +26,8 @@ def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
   ''' returns s3 bucket keys that were last modified in date range '''
   return [
     k for idk, k in enumerate(keys)
-    if keys_last_modified[idk] >= start_date and keys_last_modified[idk] <= end_date
+    if keys_last_modified[idk] >= start_date and
+      keys_last_modified[idk] <= end_date
   ]
 
 def list_keys(client, bucket):
