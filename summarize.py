@@ -43,17 +43,17 @@ df = create_data_frame(logpath, fields)
 # create and print summary
 
 pivot = df.pivot_table(
-  index=fields,
-  columns='yyyy-mm-dd',
-  aggfunc=len,
-  fill_value=0,
-)
+          index=fields,
+          columns='yyyy-mm-dd',
+          aggfunc=len,
+          fill_value=0,
+        )
 
 with pd.option_context(
   'display.max_rows', None,
   'display.width', None,
   'display.max_columns', None,
-  ):
+):
   print(pivot)
 
 excel_out and pivot.to_excel(excel_out_file)

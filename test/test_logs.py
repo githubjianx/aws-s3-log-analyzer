@@ -1,6 +1,10 @@
 import pandas as pd
 
-from aws_s3_log_analyzer.logs import clean_log, create_data_frame, s3_logs_to_csv_rows
+from aws_s3_log_analyzer.logs import \
+  clean_log, \
+  create_data_frame, \
+  s3_logs_to_csv_rows
+
 from test.fixtures.sample_logs import \
   sample_log_file_path, \
   sample_logs_csv, \

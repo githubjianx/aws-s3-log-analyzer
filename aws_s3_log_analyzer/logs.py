@@ -25,6 +25,5 @@ def s3_logs_to_csv_rows(logpath):
   for log in read_path(logpath):
     csv_reader = csv.reader([clean_log(log)], delimiter=' ')
     # row is a list of fields in the log line
-    for row in csv_reader:
-      rows += [row]
+    rows += [row for row in csv_reader]
   return rows

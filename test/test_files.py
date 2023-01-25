@@ -1,5 +1,13 @@
-from aws_s3_log_analyzer.files import files, read_files_in_dir, read_path
-from test.fixtures.sample_logs import sample_log_dir_files, sample_log_dir_path, sample_log_file_path, sample_logs_txt
+from aws_s3_log_analyzer.files import \
+  files, \
+  read_files_in_dir, \
+  read_path
+
+from test.fixtures.sample_logs import \
+  sample_log_dir_files, \
+  sample_log_dir_path, \
+  sample_log_file_path, \
+  sample_logs_txt
 
 def describe_files():
   def finds_them(sample_log_dir_path, sample_log_dir_files):

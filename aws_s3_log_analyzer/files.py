@@ -7,11 +7,10 @@ from multiprocessing import Pool
 def files(dir1):
   ''' globs all files in dir, recursively '''
   globstr = dir1 + '/**'
-  files = []
-  for file1 in glob.glob(globstr, recursive=True):
-    if os.path.isfile(file1):
-      files += [file1]
-  return files
+  return [
+    file1 for file1 in glob.glob(globstr, recursive=True)
+    if os.path.isfile(file1)
+  ]
 
 def read_files_in_dir(dir1):
   ''' reads all files in dir, recursively '''
