@@ -2,8 +2,15 @@ import os
 
 from datetime import datetime, timedelta
 
-from aws_s3_log_analyzer.s3 import keys_last_modified_in_range, list_keys, make_dirs, map_keys_to_paths
-from test.fixtures.s3 import expected_keys, expected_keys_last_modified, mock_s3_client
+from aws_s3_log_analyzer.s3 import \
+  keys_last_modified_in_range, \
+  list_keys, make_dirs, \
+  map_keys_to_paths
+
+from test.fixtures.s3 import \
+  expected_keys, \
+  expected_keys_last_modified, \
+  mock_s3_client
 
 def describe_keys_last_modified_in_range():
   keys = ['foo', 'bar', 'baz']
