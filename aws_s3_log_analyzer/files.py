@@ -4,19 +4,26 @@ import os
 
 from multiprocessing import Pool
 
-def files(dir1):
+def files(dirx):
   ''' globs all files in dir, recursively '''
-  globstr = dir1 + '/**'
+  globstr = dirx + '/**'
   return [
-    file1 for file1 in glob.glob(globstr, recursive=True)
-    if os.path.isfile(file1)
+    path for path in glob.glob(globstr, recursive=True)
+    if os.path.isfile(path)
   ]
 
-def read_files_in_dir(dir1):
+def make_dirs(paths):
+  ''' creates the directories named in paths '''
+  for path in paths:
+    dir_path = os.path.dirname(path)
+    if not os.path.exists(dir_path):
+      os.makedirs(dir_path)
+
+def read_files_in_dir(dirx):
   ''' reads all files in dir, recursively '''
   lines_of_all_files = []
   with Pool(1) as pool:
-    for lines_of_one_file in pool.map(read_path, files(dir1)):
+    for lines_of_one_file in pool.map(read_path, files(dirx)):
       lines_of_all_files += lines_of_one_file
   return lines_of_all_files
 
