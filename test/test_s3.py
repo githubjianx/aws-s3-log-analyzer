@@ -1,10 +1,8 @@
-import os
-
 from datetime import datetime, timedelta
 
 from aws_s3_log_analyzer.s3 import \
   keys_last_modified_in_range, \
-  list_keys, make_dirs, \
+  list_keys, \
   map_keys_to_paths
 
 from test.fixtures.s3 import \
@@ -53,25 +51,6 @@ def describe_list_keys():
     [keys, keys_last_modified] = list_keys(mock_s3_client, None)
     assert keys == expected_keys
     assert keys_last_modified == expected_keys_last_modified
-
-def describe_make_dirs():
-  def makes_nonexistent_dirs(mocker):
-    mocker.patch('os.path.exists', return_value=False)
-    mocker.patch('os.makedirs')
-    os_makedirs_spy = mocker.spy(os, "makedirs")
-    paths = ['foo/bar', 'bar/foo']
-    make_dirs(paths)
-    assert os_makedirs_spy.call_count == 2
-    os_makedirs_spy.assert_has_calls([mocker.call('foo'), mocker.call('bar')])
-
-  def skips_existent_dir(mocker):
-    mocker.patch('os.path.exists').side_effect = [False, True]
-    mocker.patch('os.makedirs')
-    os_makedirs_spy = mocker.spy(os, "makedirs")
-    paths = ['foo/bar', 'bar/foo']
-    make_dirs(paths)
-    assert os_makedirs_spy.call_count == 1
-    os_makedirs_spy.assert_has_calls([mocker.call('foo')])
 
 def describe_map_keys_to_paths():
   def no_keys():
