@@ -4,7 +4,7 @@ import os
 from aws_s3_log_analyzer.files import make_dirs
 
 def download(bucket, start_date, end_date, dest_dir):
-  ''' downloads to dest dir those s3 bucket keys last modified in date range '''
+  ''' download s3 bucket keys that were last modified within date range '''
   client = boto3.client('s3')
   [keys, keys_last_modified] = list_keys(client, bucket)
   wanted_keys = keys_last_modified_in_range(
@@ -13,19 +13,19 @@ def download(bucket, start_date, end_date, dest_dir):
   download_keys(client, bucket, wanted_keys, dest_dir)
 
 def download_keys(client, bucket, keys, dest_dir):
-  ''' downloads s3 bucket keys to dest dir'''
+  ''' download s3 bucket keys '''
   keys_and_paths = map_keys_to_paths(keys, dest_dir)
   paths = list(keys_and_paths.values())
   make_dirs(paths)
   download_keys_to_paths(client, bucket, keys_and_paths)
 
 def download_keys_to_paths(client, bucket, keys_and_paths):
-  ''' download s3 bucket keys to paths '''
+  ''' download s3 bucket keys to specified paths '''
   for key, path in keys_and_paths.items():
     client.download_file(bucket, key, path)
 
 def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
-  ''' returns s3 bucket keys that were last modified in date range '''
+  ''' return list of s3 bucket keys that were last modified within date range '''
   return [
     key for index, key in enumerate(keys)
     if keys_last_modified[index] >= start_date and
@@ -33,7 +33,7 @@ def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
   ]
 
 def list_keys(client, bucket):
-  ''' lists all keys in s3 bucket '''
+  ''' list all keys in s3 bucket '''
   keys = []
   keys_last_modified = []
   next_token = ''
@@ -55,7 +55,7 @@ def list_keys(client, bucket):
   return [keys, keys_last_modified]
 
 def map_keys_to_paths(keys, dest_dir):
-  ''' returns mapping of s3 bucket keys to their dest paths '''
+  ''' return mapping of s3 bucket keys to their dest paths '''
   keys_and_paths = {}
   for key in keys:
     keys_and_paths[key] = os.path.join(dest_dir, key)
