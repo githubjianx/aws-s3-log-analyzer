@@ -20,6 +20,13 @@ def parse_args():
     '''
   )
   parser.add_argument(
+    '--prefix',
+    default='/',
+    help='''
+    only look at log files under this prefix.
+    '''
+  )
+  parser.add_argument(
     '--start_date',
     default=datetime.now(tz=UTC) - timedelta(days=1),
     help='''
@@ -52,8 +59,8 @@ def parse_args():
 ######
 
 args = parse_args()
-s3_bucket, start_date, end_date, dest_base_dir  = (
-  args.s3_bucket, args.start_date, args.end_date, args.dest_base_dir
+s3_bucket, prefix, start_date, end_date, dest_base_dir  = (
+  args.s3_bucket, args.prefix, args.start_date, args.end_date, args.dest_base_dir
 )
 
 start_date_obj = string_to_utc_date(start_date)
@@ -63,4 +70,4 @@ if start_date_obj > end_date_obj:
 
 dest_dir = dest_base_dir + '/' + s3_bucket
 
-download(s3_bucket, start_date_obj, end_date_obj, dest_dir)
+download(s3_bucket, prefix, start_date_obj, end_date_obj, dest_dir)

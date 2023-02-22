@@ -3,10 +3,10 @@ import os
 
 from aws_s3_log_analyzer.files import make_dirs
 
-def download(bucket, start_date, end_date, dest_dir):
+def download(bucket, prefix, start_date, end_date, dest_dir):
   ''' download s3 bucket keys that were last modified within date range '''
   client = boto3.client('s3')
-  [keys, keys_last_modified] = list_keys(client, bucket)
+  [keys, keys_last_modified] = list_keys(client, bucket, prefix)
   wanted_keys = keys_last_modified_in_range(
                   keys, keys_last_modified, start_date, end_date
                 )
@@ -32,13 +32,14 @@ def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
       keys_last_modified[index] <= end_date
   ]
 
-def list_keys(client, bucket):
-  ''' list all keys in s3 bucket '''
+def list_keys(client, bucket, prefix):
+  ''' list all keys in s3 bucket matching prefix '''
   keys = []
   keys_last_modified = []
   next_token = ''
   base_kwargs = {
-    'Bucket':bucket
+    'Bucket':bucket,
+    'Prefix':prefix
   }
   while next_token is not None:
     kwargs = base_kwargs.copy()

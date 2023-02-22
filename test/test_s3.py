@@ -47,8 +47,8 @@ def describe_keys_last_modified_in_range():
            ) == ['bar']
 
 def describe_list_keys():
-  def gets_keys(expected_keys, expected_keys_last_modified, mock_s3_client):
-    [keys, keys_last_modified] = list_keys(mock_s3_client, None)
+  def it_lists_keys(expected_keys, expected_keys_last_modified, mock_s3_client):
+    [keys, keys_last_modified] = list_keys(mock_s3_client, 'foobucket', 'fooprefix')
     assert keys == expected_keys
     assert keys_last_modified == expected_keys_last_modified
 
