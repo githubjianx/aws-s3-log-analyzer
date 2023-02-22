@@ -6,7 +6,7 @@ from datetime import date as ddate, datetime, timedelta
 from pytz import UTC
 
 from aws_s3_log_analyzer.dates import string_to_utc_date
-from aws_s3_log_analyzer.s3 import download
+from aws_s3_log_analyzer.s3 import download_access_logs
 
 def parse_args():
   parser = argparse.ArgumentParser(
@@ -70,4 +70,4 @@ if start_date_obj > end_date_obj:
 
 dest_dir = dest_base_dir + '/' + s3_bucket
 
-download(s3_bucket, prefix, start_date_obj, end_date_obj, dest_dir)
+download_access_logs(s3_bucket, prefix, start_date_obj, end_date_obj, dest_dir)
