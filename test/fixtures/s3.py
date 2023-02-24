@@ -19,6 +19,16 @@ def expected_keys_last_modified():
   ]
 
 @pytest.fixture
+def mock_list_prefix():
+  def mock_list_keys(client, bucket, prefix):
+    return_values = [
+      [prefix + 'abc'],
+      [datetime.datetime(2023, 1, 23, 1, 17, 7, tzinfo=tzutc())]
+    ]
+    return return_values
+  return mock_list_keys
+
+@pytest.fixture
 def mock_s3_client():
   class mock_s3_client():
     def list_objects_v2(**kwargs):

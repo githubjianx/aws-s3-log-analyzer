@@ -7,8 +7,16 @@ from aws_s3_log_analyzer.files import make_dirs
 def download_access_logs(bucket, prefix, start_date, end_date, dest_dir):
   ''' download s3 access logs that were last modified within date range '''
   client = boto3.client('s3')
-  keys = list_access_log_keys(client, bucket, prefix, start_date, end_date)
-  download_keys(client, bucket, keys, dest_dir)
+  # when access log files span years, listing them all take a long time.
+  # since we have start and end dates, and that access log files have dates in their names.
+  # we can be more specific about the listing, to speed it up.
+  days = date_range_to_days_list(start_date, end_date)
+  keys, keys_last_modified = list_access_log_keys(client, bucket, prefix, days)
+  # still check against last modified
+  filtered_keys = keys_last_modified_in_range(
+    keys, keys_last_modified, start_date, end_date
+  )
+  download_keys(client, bucket, filtered_keys, dest_dir)
 
 def download_keys(client, bucket, keys, dest_dir):
   ''' download s3 bucket keys '''
@@ -30,27 +38,22 @@ def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
       keys_last_modified[index] <= end_date
   ]
 
-def list_access_log_keys(client, bucket, prefix, start_date, end_date):
-  '''return list of keys under the specified S3 bucket/prefix holding S3 access logs
-  S3 creates a log file for every few access events.
-  So there can be thousands and thousands of files/keys under the prefix.
-  Listing them will take a long time.
+def list_access_log_keys(client, bucket, prefix, days):
+  '''Return access log keys and their last modified time,
+  for keys whose names start with any of the days specified.
 
-  Since the keys are named after their dates, for example:
+  Access log key names start with the yyyy-mm-dd. For example:
+
   2023-02-22-00-15-29-D5DCE8A086530745
 
-  We make the prefix more specific, listing fewer keys, which is faster.
-
-  For example, if we are given:
+  If we are given:
   - prefix: foo/
-  - start_date: 2023-02-21...
-  - end_date: 2023-02-22...
+  - days: 2023-02-21, 2023-02-22
 
-  We list only these prefixes:
+  We list:
   - foo/2023-02-21-
   - foo/2023-02-22-
   '''
-  days = date_range_to_days_list(start_date, end_date)
   keys = []
   keys_last_modified = []
   for day in days:
@@ -58,11 +61,7 @@ def list_access_log_keys(client, bucket, prefix, start_date, end_date):
     [day_keys, day_keys_last_modified] = list_keys(client, bucket, full_prefix)
     keys += day_keys
     keys_last_modified += day_keys_last_modified
-  # still check the keys' last modified date
-  filtered_keys = keys_last_modified_in_range(
-                  keys, keys_last_modified, start_date, end_date
-                )
-  return filtered_keys
+  return keys, keys_last_modified
 
 def list_keys(client, bucket, prefix):
   ''' list all keys in s3 bucket matching prefix '''
