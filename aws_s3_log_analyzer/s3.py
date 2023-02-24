@@ -5,7 +5,7 @@ from aws_s3_log_analyzer.dates import date_range_to_days_list
 from aws_s3_log_analyzer.files import make_dirs
 
 def download_access_logs(bucket, prefix, start_date, end_date, dest_dir):
-  ''' download s3 access logs that were last modified within date range '''
+  """download s3 access logs that were last modified within date range"""
   client = boto3.client('s3')
   # when access log files span years, listing them all take a long time.
   # since we have start and end dates, and that access log files have dates in their names.
@@ -19,19 +19,19 @@ def download_access_logs(bucket, prefix, start_date, end_date, dest_dir):
   download_keys(client, bucket, filtered_keys, dest_dir)
 
 def download_keys(client, bucket, keys, dest_dir):
-  ''' download s3 bucket keys '''
+  """download s3 bucket keys"""
   keys_and_paths = map_keys_to_paths(keys, dest_dir)
   paths = list(keys_and_paths.values())
   make_dirs(paths)
   download_keys_to_paths(client, bucket, keys_and_paths)
 
 def download_keys_to_paths(client, bucket, keys_and_paths):
-  ''' download s3 bucket keys to specified paths '''
+  """download s3 bucket keys to specified paths"""
   for key, path in keys_and_paths.items():
     client.download_file(bucket, key, path)
 
 def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
-  ''' return list of s3 bucket keys that were last modified within date range '''
+  """return list of s3 bucket keys that were last modified within date range"""
   return [
     key for index, key in enumerate(keys)
     if keys_last_modified[index] >= start_date and
@@ -39,7 +39,7 @@ def keys_last_modified_in_range(keys, keys_last_modified, start_date, end_date):
   ]
 
 def list_access_log_keys(client, bucket, prefix, days):
-  '''Return access log keys and their last modified time,
+  """Return access log keys and their last modified time,
   for keys whose names start with any of the days specified.
 
   Access log key names start with the yyyy-mm-dd. For example:
@@ -53,7 +53,7 @@ def list_access_log_keys(client, bucket, prefix, days):
   We list:
   - foo/2023-02-21-
   - foo/2023-02-22-
-  '''
+  """
   keys = []
   keys_last_modified = []
   for day in days:
@@ -64,7 +64,7 @@ def list_access_log_keys(client, bucket, prefix, days):
   return keys, keys_last_modified
 
 def list_keys(client, bucket, prefix):
-  ''' list all keys in s3 bucket matching prefix '''
+  """list all keys in s3 bucket matching prefix"""
   keys = []
   keys_last_modified = []
   next_token = ''
@@ -87,7 +87,7 @@ def list_keys(client, bucket, prefix):
   return [keys, keys_last_modified]
 
 def map_keys_to_paths(keys, dest_dir):
-  ''' return mapping of s3 bucket keys to their dest paths '''
+  """return mapping of s3 bucket keys to their dest paths"""
   keys_and_paths = {}
   for key in keys:
     keys_and_paths[key] = os.path.join(dest_dir, key)
