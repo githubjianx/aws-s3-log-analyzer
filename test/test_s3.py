@@ -21,35 +21,33 @@ def describe_keys_last_modified_in_range():
   start_date = now - timedelta(days = 3)
   end_date = now - timedelta(days = 1)
 
-  def all_in_range():
+  def it_returns_correctly_when_all_in_range():
     keys_last_modified = [
       now - timedelta(days = 3),
       now - timedelta(days = 2),
       now - timedelta(days = 1)
     ]
     assert keys_last_modified_in_range(
-            keys, keys_last_modified, start_date, end_date
-           ) == keys
-
-  def none_in_range():
+      keys, keys_last_modified, start_date, end_date
+    ) == keys
+  def it_returns_correctly_when_none_in_range():
     keys_last_modified = [
       now - timedelta(days = 5),
       now - timedelta(days = 4),
       now
     ]
     assert keys_last_modified_in_range(
-            keys, keys_last_modified, start_date, end_date
-           ) == []
-
-  def some_in_range():
+      keys, keys_last_modified, start_date, end_date
+     ) == []
+  def it_returns_correctly_when_some_in_range():
     keys_last_modified = [
       now - timedelta(days = 4),
       now - timedelta(days = 2),
       now
     ]
     assert keys_last_modified_in_range(
-            keys, keys_last_modified, start_date, end_date
-           ) == ['bar']
+      keys, keys_last_modified, start_date, end_date
+     ) == ['bar']
 
 def describe_list_access_log_keys():
   def it_lists_keys_that_are_named_by_the_specified_days(mocker, mock_list_prefix):
@@ -79,17 +77,15 @@ def describe_list_keys():
     assert keys_last_modified == expected_keys_last_modified
 
 def describe_map_keys_to_paths():
-  def no_keys():
+  def it_maps_correctly_when_no_keys():
     keys = []
     dest_dir = './logs'
     assert map_keys_to_paths(keys, dest_dir) == {}
-
-  def one_key():
+  def it_maps_correctly_when_one_key():
     keys = ['foo']
     dest_dir = './logs'
     assert map_keys_to_paths(keys, dest_dir) == {'foo': './logs/foo'}
-
-  def two_keys():
+  def it_maps_correctly_when_two_keys():
     keys = ['foo', 'foo/bar']
     dest_dir = './logs'
     assert map_keys_to_paths(keys, dest_dir) == \

@@ -18,12 +18,11 @@ def describe_date_range_to_days_list():
     ]
 
 def describe_string_to_utc_date():
-  def converts_string():
+  def it_converts_string():
     strx = '1990-01-01 01:01:01'
     date = datetime.strptime('1990-01-01 01:01:01', '%Y-%m-%d %H:%M:%S')
     date2 = date.replace(tzinfo=UTC)
     assert string_to_utc_date(strx) == date2
-
-  def does_not_convert_datetime_object():
+  def it_does_not_convert_datetime_object():
     date = datetime.now()
     assert string_to_utc_date(date) is date
